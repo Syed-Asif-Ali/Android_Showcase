@@ -5,9 +5,10 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sam.android_showcase.GetPostsQuery
-import com.sam.android_showcase.features.network.ApiRepo
-import com.sam.android_showcase.features.network.UseCaseResponse
-import com.sam.android_showcase.model.CommonItem
+import com.sam.android_showcase.R
+import com.sam.android_showcase.network.ApiRepo
+import com.sam.android_showcase.network.UseCaseResponse
+import com.sam.android_showcase.utills.isNetworkAvailable
 
 class PostsViewModel(private val mApiRepo: ApiRepo, private val mContext: Application) : ViewModel(){
 
@@ -25,11 +26,25 @@ class PostsViewModel(private val mApiRepo: ApiRepo, private val mContext: Applic
     }
 
     fun getPosts() {
-        if (isAllDataLoaded) return;
+        // Return if all data is loaded
+        if (isAllDataLoaded) return
+
+        // Return if network is unavailable
+        if (!mContext.isNetworkAvailable()) {
+            messageData.postValue(mContext.getString(R.string.no_internet_connection))
+            showProgressbar.postValue(false)
+            return
+        }
+
+        // Return if API is loading
+        if(showProgressbar.value!= null && showProgressbar.value!!)  return
+
+        // Load Data
         showProgressbar.postValue(true)
-        Log.d("viewModel", "getPosts called")
-        mApiRepo.getPosts(page, limit, mContext , object : UseCaseResponse<ArrayList<GetPostsQuery.Data1>>{
+        Log.d("viewModel", "loading posts data page: $page")
+        mApiRepo.getPosts(page, limit, object : UseCaseResponse<ArrayList<GetPostsQuery.Data1>>{
             override fun onSuccess(result: ArrayList<GetPostsQuery.Data1>) {
+                showProgressbar.postValue(false)
                 if(postsData.value == null){
                     val tmp: ArrayList<GetPostsQuery.Data1> = ArrayList()
                     tmp.addAll(result)
@@ -39,7 +54,6 @@ class PostsViewModel(private val mApiRepo: ApiRepo, private val mContext: Applic
                     tmp.addAll(result)
                     postsData.postValue(tmp)
                 }
-                showProgressbar.postValue(false)
                 page++
             }
 

@@ -1,40 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <data>
     <variable name="PostsViewModel" type="com.sam.android_showcase.features.posts.PostsViewModel"/>
 </data>
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvUser"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{PostsViewModel.selected.user.name}"
-            android:layout_marginTop="20dp"/>
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{PostsViewModel.selected.user.username}"
-            android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{PostsViewModel.selected.title}"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:textSize="@dimen/title"
+                android:textColor="@color/colorTextPrimary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{PostsViewModel.selected.title}"
-            android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/tvBody"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{PostsViewModel.selected.body}"
+                android:textColor="@color/colorTextSecondary"
+                android:layout_marginTop="4dp"
+                android:textSize="@dimen/body2"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toStartOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-        <TextView
-            android:id="@+id/tvBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{PostsViewModel.selected.body}"
-            android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/head"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Created by:"
+                android:textSize="18sp"
+                android:textColor="@color/colorTextSecondary2"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/tvBody"
+                app:layout_constraintStart_toStartOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvUser"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{PostsViewModel.selected.user.name}"
+                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/colorTextSecondary"
+                app:layout_constraintTop_toBottomOf="@id/head"
+                app:layout_constraintStart_toStartOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{PostsViewModel.selected.user.username}"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorTextSecondary"
+                app:layout_constraintTop_toBottomOf="@id/tvUser"
+                app:layout_constraintStart_toStartOf="@id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

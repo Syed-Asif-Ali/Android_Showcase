@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--Black 54%-->
-    <!--Black 54%-->
-    <!--Black 54% & leading 48dp-->
-    <!--Black 54% & leading 40dp-->
-
-    <!--Black 87% & leading 32dp-->
-    <dimen name="title">20sp</dimen><!--Black 87%-->
-
-    <!--Black 87% & leading 28dp-->
-    <!--Black 87% & leading 24dp-->
-    <dimen name="body2">14sp</dimen><!--Black 87% & leading 24dp-->
-    <!--Black 87% & leading 20dp-->
-
-    <!--Black 54%-->
+    <dimen name="title">20sp</dimen>
+    <dimen name="body2">14sp</dimen>
 
 </resources>

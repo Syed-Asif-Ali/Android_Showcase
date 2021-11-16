@@ -10,6 +10,7 @@ import com.sam.android_showcase.utills.enableBackButton
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import androidx.databinding.DataBindingUtil
 import com.sam.android_showcase.databinding.FragmentPostDetailBinding
+import com.sam.android_showcase.utills.setActionBarText
 
 
 class PostDetailFragment  : Fragment() {
@@ -26,6 +27,7 @@ class PostDetailFragment  : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().enableBackButton(true)
+        requireActivity().setActionBarText("Post Detail")
     }
 
 }

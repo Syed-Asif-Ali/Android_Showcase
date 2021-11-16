@@ -9,17 +9,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.sam.android_showcase.GetPostsQuery
-import com.sam.android_showcase.R
-import com.sam.android_showcase.adapters.PostAdapter
 import com.sam.android_showcase.databinding.FragmentPostsBinding
 import com.sam.android_showcase.utills.enableBackButton
-import com.sam.android_showcase.utills.isNetworkAvailable
 import com.sam.android_showcase.utills.replaceFragmentWithAnim
+import com.sam.android_showcase.utills.setActionBarText
 import org.koin.android.viewmodel.ext.android.sharedViewModel
+import java.lang.Exception
 
 class PostsFragment : Fragment() {
 
@@ -27,9 +26,9 @@ class PostsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: PostsViewModel by sharedViewModel()
-
-    var mAdapter: PostAdapter? = null
-    val postList = ArrayList<GetPostsQuery.Data1>()
+    private var mAdapter: PostAdapter? = null
+    private val postList = ArrayList<GetPostsQuery.Data1>()
+    private var snackbar: Snackbar? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentPostsBinding.inflate(inflater, container, false)
@@ -40,12 +39,18 @@ class PostsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().enableBackButton(false)
+        requireActivity().setActionBarText("Posts")
 
         initListView()
+        addViewModelObservers()
 
-        // Add Observers
+        //Load Data if listview is empty
+        if(postList.isEmpty() && viewModel.postsData.value == null) viewModel.getPosts()
+    }
+
+    private fun addViewModelObservers(){
         with(viewModel) {
-            postsData.observe(viewLifecycleOwner, Observer {
+            postsData.observe(viewLifecycleOwner, {
                 if(it != null){
                     postList.clear()
                     postList.addAll(it)
@@ -53,27 +58,25 @@ class PostsFragment : Fragment() {
                 }
             })
 
-            messageData.observe(viewLifecycleOwner, Observer {
-                Toast.makeText(requireContext(), it, LENGTH_LONG).show()
+            messageData.observe(viewLifecycleOwner, {
+                if(it == null) return@observe
+
+                if(viewModel.isAllDataLoaded) {
+                    Toast.makeText(requireContext(), it, LENGTH_LONG).show()
+                    return@observe
+                }
+
+                snackbar = Snackbar.make(binding.root, it, Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Retry!") {
+                        viewModel.getPosts()
+                    }
+                snackbar!!.show()
             })
 
-            showProgressbar.observe(viewLifecycleOwner, Observer { isVisible ->
-                if(postList.isEmpty()) {
-                    binding.startloader.visibility = if (isVisible) VISIBLE else GONE
-                    binding.bottomloader.visibility = GONE
-                }
-                else {
-                    binding.startloader.visibility = GONE
-                    binding.bottomloader.visibility = if (isVisible) VISIBLE else GONE
-                }
+            showProgressbar.observe(viewLifecycleOwner, { isVisible ->
+                binding.startloader.visibility = if (postList.isEmpty() && isVisible) VISIBLE else GONE
+                binding.bottomloader.visibility = if (postList.isNotEmpty() && isVisible) VISIBLE else GONE
             })
-        }
-
-        //Load Data
-        if (requireContext().isNetworkAvailable()) {
-            if(postList.isEmpty() && viewModel.postsData.value == null) viewModel.getPosts()
-        } else {
-            Toast.makeText(requireContext(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -87,7 +90,7 @@ class PostsFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(1)) {
-                    viewModel.getPosts()
+                    if(snackbar == null || !snackbar!!.isShown) viewModel.getPosts()
                 }
             }
         })
@@ -99,9 +102,18 @@ class PostsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        mAdapter = null
         super.onDestroyView()
-        _binding = null
+        try {
+            _binding = null
+            mAdapter = null
+            if (snackbar != null && snackbar!!.isShown) {
+                snackbar!!.dismiss()
+                snackbar = null
+            }
+            viewModel.messageData.value = null
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 
     companion object {

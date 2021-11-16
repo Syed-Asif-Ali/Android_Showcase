@@ -1,4 +1,4 @@
-package com.sam.android_showcase.adapters
+package com.sam.android_showcase.features.posts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -31,7 +31,12 @@ class PostAdapter(private val dataSet: ArrayList<GetPostsQuery.Data1>) : Recycle
 
     private inner class PostViewHolder(private val viewDataBinding: ViewDataBinding) : RecyclerView.ViewHolder(viewDataBinding.root) {
         fun onBind(post: GetPostsQuery.Data1) {
-            (viewDataBinding as ListItemPostsBinding).post = post
+
+            val title = post.title ?: ""
+            var body: String = post.body ?: ""
+            if(body.length > 120) body = body.subSequence(0,120).toString() + "..."
+
+            (viewDataBinding as ListItemPostsBinding).postItem = PostItem(title, body)
         }
 
         init {
@@ -40,4 +45,6 @@ class PostAdapter(private val dataSet: ArrayList<GetPostsQuery.Data1>) : Recycle
             }
         }
     }
+
+    data class PostItem(val title: String, val body: String)
 }

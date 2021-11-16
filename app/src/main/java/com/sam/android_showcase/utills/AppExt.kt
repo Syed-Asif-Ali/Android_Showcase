@@ -14,6 +14,10 @@ fun Activity.enableBackButton(bool: Boolean) {
     (this as MainActivity?)?.supportActionBar?.setDisplayShowHomeEnabled(bool)
 }
 
+fun Activity.setActionBarText(text: String) {
+    (this as MainActivity?)?.supportActionBar?.title = text
+}
+
 fun Activity.appExitDialog() {
     AlertDialog.Builder(this)
         .setTitle("Exit")

@@ -1,4 +1,4 @@
-package com.sam.android_showcase.features.network
+package com.sam.android_showcase.network
 
 interface UseCaseResponse<Type> {
 

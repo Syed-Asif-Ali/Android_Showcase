@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<data>
+    <variable name="PostsViewModel" type="com.sam.android_showcase.features.posts.PostsViewModel"/>
+</data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{PostsViewModel.selected.user.name}"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{PostsViewModel.selected.user.username}"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{PostsViewModel.selected.title}"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/tvBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{PostsViewModel.selected.body}"
+            android:layout_marginTop="20dp"/>
+
+    </LinearLayout>
+</layout>

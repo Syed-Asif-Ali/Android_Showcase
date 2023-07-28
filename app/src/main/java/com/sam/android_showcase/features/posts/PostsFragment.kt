@@ -50,13 +50,13 @@ class PostsFragment : Fragment() {
 
     private fun addViewModelObservers(){
         with(viewModel) {
-            postsData.observe(viewLifecycleOwner, {
-                if(it != null){
+            postsData.observe(viewLifecycleOwner) {
+                if (it != null) {
                     postList.clear()
                     postList.addAll(it)
                     mAdapter?.notifyDataSetChanged()
                 }
-            })
+            }
 
             messageData.observe(viewLifecycleOwner, {
                 if(it == null) return@observe
